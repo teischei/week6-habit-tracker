@@ -38,3 +38,10 @@ def test_rejects_malformed_checkin_day():
     r = client.post(f"/habits/{hid}/checkin", json={"day": "not-a-date"})
     assert r.status_code == 422
     assert r.json()["detail"] == "day must use YYYY-MM-DD"
+
+
+def test_rejects_checkin_day_without_dashes():
+    hid = client.post("/habits", json={"name": "Journal"}).json()["id"]
+    r = client.post(f"/habits/{hid}/checkin", json={"day": "20260922"})
+    assert r.status_code == 422
+    assert r.json()["detail"] == "day must use YYYY-MM-DD"

@@ -76,8 +76,10 @@ def list_habits():
 @app.post("/habits/{habit_id}/checkin")
 def add_checkin(habit_id: int, checkin: CheckinIn):
     try:
-        date.fromisoformat(checkin.day)
+        parsed_day = date.fromisoformat(checkin.day)
     except ValueError:
+        raise HTTPException(status_code=422, detail="day must use YYYY-MM-DD")
+    if parsed_day.isoformat() != checkin.day:
         raise HTTPException(status_code=422, detail="day must use YYYY-MM-DD")
     with closing(get_db()) as conn:
         habit = conn.execute("SELECT id FROM habits WHERE id = ?", (habit_id,)).fetchone()
