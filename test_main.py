@@ -46,3 +46,10 @@ def test_weekly_summary_counts_only_the_last_seven_days():
 
     assert response.status_code == 200
     assert response.json() == {"habit_id": habit_id, "checkins": 3}
+
+
+def test_weekly_summary_unknown_habit_returns_404():
+    response = client.get("/habits/99999/summary")
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "unknown habit"
