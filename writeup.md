@@ -25,13 +25,13 @@ Black catches formatting differences and Ruff catches lint issues such as unused
 
 The validation feature rejects blank habit names and invalid check-in days. My manual review found that `date.fromisoformat` accepts the compact form `20260922`, even though the API says it uses `YYYY-MM-DD`. I added a round trip check with `isoformat()` and a test for the compact form before opening the PR.
 
-Graphite returned ACCEPT and agreed that the final date validation rejects compact, week-date, and impossible-date values. It was more thorough about remaining test gaps. It suggested a positive test proving that a name with extra spaces is trimmed, plus more invalid date examples. It also noticed that FastAPI can return a different 422 detail shape for request-model errors. I kept the current response shape because changing it would be outside this small feature, but the test suggestions would be good follow-up work.
+Graphite returned ACCEPT and agreed that the final date validation rejects compact, week-date, and impossible-date values. It was better than my review at listing remaining test gaps. It suggested a positive test proving that a name with extra spaces is trimmed, plus more invalid date examples. My review was stronger at finding the exact behavior problem before the PR was opened and turning it into a small fix. Graphite also noticed that FastAPI can return a different 422 detail shape for request-model errors, but I kept the current response shape because changing it would be outside this small feature.
 
 ## PR 5 weekly summary
 
 The weekly summary endpoint returns the number of check-ins from today through the previous six days. My manual review found that an unknown habit returned a successful count of zero. I fixed that by checking for the habit first and returning the same 404 response as the existing check-in route.
 
-Graphite returned ACCEPT and confirmed that the seven-day range and 404 behavior were correct. It was better at identifying broader product decisions. It pointed out that duplicate same-day check-ins can make the count exceed seven, and that the API does not say whether it is counting check-ins or distinct days. It also suggested tests for zero check-ins and future-dated check-ins. The validation issue it mentioned is handled in PR 4, while the duplicate-check-in behavior is a separate product decision that I did not expand into this task.
+Graphite returned ACCEPT and confirmed that the seven-day range and 404 behavior were correct. It was better at identifying broader product decisions. It pointed out that duplicate same-day check-ins can make the count exceed seven, and that the API does not say whether it is counting check-ins or distinct days. It also suggested tests for zero check-ins and future-dated check-ins. My review was more useful for the immediate API consistency issue because I found and fixed the missing 404 before the PR. Graphite was less useful for deciding whether duplicate check-ins should count as events or days, since that needs product direction rather than a code-only answer.
 
 ## What I learned
 
